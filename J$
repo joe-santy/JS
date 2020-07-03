@@ -1,0 +1,101 @@
+const J$ = {
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+  // In English
+
+  // Append html to element
+  append : (elements, html) => {
+    return J$.juntar(elements, html);
+  },
+
+  // Select element(s) by #id, .class, or tag
+  choose : (selector) => {
+    return J$.escoger(selector);
+  },
+
+  // Display all of the elements of a json object, appending to elements
+  display : (elements, json) => {
+    return J$.desplegar(elements, json);
+  },
+
+  // Prepend html to element
+  prepend : (elements, html) => {
+    return J$.prefijar(elements, html);
+  },
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+  // En Espanol
+
+  // Juntar html a un elemento
+  juntar : (elementos, html) => {
+    if (!Array.isArray(elementos)) {
+      elementos.innerHTML = elementos.innerHTML + html;
+    } else {
+      for (el of elementos) {
+        el.innerHTML += html;
+      }
+    }
+    return elementos;
+  },
+
+  // Escoger colección de elementos por #identificacion, .clase, o tag
+  escoger : (selector) => {
+    let el =
+        selector[0] === '#' ? window.document.getElementById(selector.slice(1, selector.length))
+      : selector[0] === '.' ? window.document.getElementsByClassName(selector.slice(1, selector.length))
+      : selector.match(/\w+/) ? window.document.getElementsByTagName(selector)
+      : null;
+
+    if (Array.isArray(el)) {
+      return el;
+    } else if (el) {
+      arr = [];
+      arr.push(el);
+      return arr;
+    } else {
+      return;
+    }
+  },
+
+  // Juntar cada parte de un json a un(os) elemento(s)
+  desplegar : (elementos, json) => {
+    let html = "";
+    (function romper(j, layersNested) {
+      if ((typeof j === "object") && (Array.isArray(j))){
+        for (let i in j) {
+          romper(j[i], layersNested + 1);
+        }
+      } else if (typeof j === "object") {
+        for (let i in j){
+          html += `<p class="nested-${layersNested}"><b>${i}</b></p>`;
+          romper(j[i], layersNested + 1);
+        }
+      } else {
+        html += `<p class="nested-${layersNested} nested-txt">${j}</p>`;
+      }
+    })(json, layersNested = 0);
+
+    // Lo mismo que J$.juntar
+    if (!Array.isArray(elementos)) {
+      elementos.innerHTML = elementos.innerHTML + html;
+    } else {
+      for (el of elementos) {
+        el.innerHTML += html;
+      }
+    }
+    return elementos;
+  },
+
+  // Pone el html enfrente de lo que hay en los elementos
+  prefijar : (elementos, html) => {
+    if (!Array.isArray(elementos)) {
+      elementos.innerHTML = html + elementos.innerHTML;
+    } else {
+      for (el of elementos) {
+        el.innerHTML = html + el.innerHTML;
+      }
+    }
+    return elementos;
+  }
+
+}
